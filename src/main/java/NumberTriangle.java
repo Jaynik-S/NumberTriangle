@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -87,10 +89,11 @@ public class NumberTriangle {
      */
     public int retrieve(String path) {
         NumberTriangle root = this;
-        for (String s: path.split(" ")) {
-            if (s.equals("l") && root.left != null) {
+        for (int i = 0; i < path.length(); i++) {
+            char ch = path.charAt(i);
+            if (ch == 'l' && root.left != null) {
                 root = root.left;
-            } else if (s.equals("r") && root.right != null) {
+            } else if (ch == 'r' && root.right != null) {
                 root = root.right;
             }
             else {
@@ -112,32 +115,34 @@ public class NumberTriangle {
      * @throws IOException may naturally occur if an issue reading the file occurs
      */
     public static NumberTriangle loadTriangle(String fname) throws IOException {
-        // open the file and get a BufferedReader object whose methods
-        // are more convenient to work with when reading the file contents.
         InputStream inputStream = NumberTriangle.class.getClassLoader().getResourceAsStream(fname);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-
-
-        // TODO define any variables that you want to use to store things
-
-        // will need to return the top of the NumberTriangle,
-        // so might want a variable for that.
         NumberTriangle top = null;
+        List<NumberTriangle> prevRow = null;
+        String line;
 
-        String line = br.readLine();
-        while (line != null) {
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
 
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
+                String[] parts = line.split(" ");
+                List<NumberTriangle> currRow = new ArrayList<>(parts.length);
+                for (String p : parts) {
+                    currRow.add(new NumberTriangle(Integer.parseInt(p)));
+                }
 
-            // TODO process the line
-
-            //read the next line
-            line = br.readLine();
-        }
-        br.close();
+                if (top == null) { top = currRow.get(0); }
+                else {
+                    for (int i = 0; i < prevRow.size(); i++) {
+                        NumberTriangle parent = prevRow.get(i);
+                        parent.setLeft(currRow.get(i));
+                        parent.setRight(currRow.get(i + 1));
+                    }
+                }
+                prevRow = currRow;
+            }
         return top;
     }
+
 
     public static void main(String[] args) throws IOException {
 
