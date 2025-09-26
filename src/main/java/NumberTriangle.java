@@ -38,9 +38,7 @@ public class NumberTriangle {
         this.root = root;
     }
 
-    public void setLeft(NumberTriangle left) {
-        this.left = left;
-    }
+    public void setLeft(NumberTriangle left) { this.left = left; }
 
 
     public void setRight(NumberTriangle right) {
@@ -88,8 +86,18 @@ public class NumberTriangle {
      *
      */
     public int retrieve(String path) {
-        // TODO implement this method
-        return -1;
+        NumberTriangle root = this;
+        for (String s: path.split(" ")) {
+            if (s.equals("l") && root.left != null) {
+                root = root.left;
+            } else if (s.equals("r") && root.right != null) {
+                root = root.right;
+            }
+            else {
+                throw new IllegalArgumentException("Invalid path");
+            }
+        }
+        return root.getRoot();
     }
 
     /** Read in the NumberTriangle structure from a file.
@@ -138,7 +146,7 @@ public class NumberTriangle {
         // [not for credit]
         // you can implement NumberTriangle's maxPathSum method if you want to try to solve
         // Problem 18 from project Euler [not for credit]
-        mt.maxSumPath();
-        System.out.println(mt.getRoot());
+//        mt.maxSumPath();
+//        System.out.println(mt.getRoot());
     }
 }
